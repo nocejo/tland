@@ -109,7 +109,7 @@ for ( my $k = 0 ; $k < $period ; $k++ ) {
     # --------------------------------------------------------- Day, week, month delimiter
     $day      = $wday[ $wday - 1 ];
     if (length($mday)<2) { $mday = "0".$mday ; }
-    if (length($mon)<2) {
+    if ($mon<9) {                                          # 9=Oct , month 10th, length==2
         $zero  = "0" ;
     } else {
         $zero  = "" ;
@@ -132,7 +132,7 @@ for ( my $k = 0 ; $k < $period ; $k++ ) {
     # export is the Taskwarrior recomended way to get tasks to helper scripts.
     # export outputs json data.
 #    print( "task rc.verbose=nothing rc.dateformat='YMDHNS' $seltags and '((due <= $dateend) and (due >= $datebeg))' export\n" ); exit 0;
-# orig:   foreach( `task rc.verbose=nothing rc.dateformat='YMDHNS' $seltags and '((due <= $dateend) and (due >= $datebeg))' export` ) { 
+# orig:   foreach( `task rc.verbose=nothing rc.dateformat='YMDHNS' $seltags and '((due <= $dateend) and (due >= $datebeg))' export` ) {
     foreach( `task rc.verbose=nothing rc.dateformat='YMDHNS' $seltags and '(((due:$dateend) or (due.before:$dateend)) and ((due:$datebeg) or (due.after:$datebeg)))' export` ) { 
         if( $_ =~ /^.*"id":(\d+).*?"description":"(.*?)".*$/ ) { push( @all , "$2 $1" ) }
     }
