@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 # tland.pl - Taskwarrior landscape
-# Copyright 2015, Fidel Mato.
+# Copyright 2015, 2016 Fidel Mato.
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -114,9 +114,10 @@ for ( my $k = 0 ; $k < $period ; $k++ ) {
     } else {
         $zero  = "" ;
     }
-    $date     = sprintf( "%s%s%s%s", $year + 1900, $zero , $mon + 1 , $mday     );
-    $datebeg  = "$date"."000000";                          # beggining
-    $dateend  = "$date"."235959";                          # end of day
+
+    $date     = sprintf( "%s-%s%s-%s", $year + 1900, $zero , $mon + 1 , $mday     );
+    $datebeg  = "$date"."-00-00-00";                          # beggining
+    $dateend  = "$date"."-23-59-59";                          # end of day
     $day      = $day." ".$mday ;
 
     if($mon != $month) {                                   # month change alert
@@ -133,7 +134,8 @@ for ( my $k = 0 ; $k < $period ; $k++ ) {
     # export outputs json data.
 #    print( "task rc.verbose=nothing rc.dateformat='YMDHNS' $seltags and '((due <= $dateend) and (due >= $datebeg))' export\n" ); exit 0;
 # orig:   foreach( `task rc.verbose=nothing rc.dateformat='YMDHNS' $seltags and '((due <= $dateend) and (due >= $datebeg))' export` ) {
-    foreach( `task rc.verbose=nothing rc.dateformat='YMDHNS' $seltags and '(((due:$dateend) or (due.before:$dateend)) and ((due:$datebeg) or (due.after:$datebeg)))' export` ) { 
+
+    foreach( `task rc.verbose=nothing rc.dateformat='Y-M-D-H-N-S' $seltags and '(((due:$dateend) or (due.before:$dateend)) and ((due:$datebeg) or (due.after:$datebeg)))' export` ) { 
         if( $_ =~ /^.*"id":(\d+).*?"description":"(.*?)".*$/ ) { push( @all , "$2 $1" ) }
     }
 
